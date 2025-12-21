@@ -2,8 +2,12 @@ import { RarityConfig, CollectionItem } from './types';
 
 // Pixel icon options for items
 export const PIXEL_ICONS = [
+  '/item/bag.png',
+  '/item/books.png',
   '/item/car.png',
   '/item/figure.png',
+  '/item/game.png',
+  '/item/green.png',
   '/item/pc.png',
   '/item/phone.png',
   '/item/watch.png'

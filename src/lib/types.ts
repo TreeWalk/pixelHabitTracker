@@ -9,6 +9,15 @@ export interface Quest {
 
 export type QuestType = Quest['type'];
 
+// Quest Log Types
+export interface QuestLog {
+  id: number;
+  questTitle: string;
+  questType: QuestType;
+  xp: number;
+  completedAt: string;
+}
+
 // Collection Item Types
 export interface CollectionItem {
   id: number;
