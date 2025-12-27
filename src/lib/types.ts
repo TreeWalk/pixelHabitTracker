@@ -43,6 +43,7 @@ export interface Location {
   unlocked: boolean;
   size: string;
   width?: string;
+  banner?: string;
 }
 
 // Rarity Config
