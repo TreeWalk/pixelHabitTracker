@@ -8,46 +8,50 @@ const locations: Location[] = [
   {
     id: 1,
     name: "Home Base",
-    x: 78,
+    x: 74,
     y: 22,
     icon: "/image/home.png",
     type: "Rest",
     desc: "Safe zone. Recover HP here.",
     unlocked: true,
-    size: "w-36 h-36"
+    size: "w-40",
+    width: "152px"
   },
   {
     id: 2,
     name: "Gym",
-    x: 78,
-    y: 78,
+    x: 70,
+    y: 70,
     icon: "/image/gyn.png",
     type: "Strength",
     desc: "Train your strength stats.",
     unlocked: true,
-    size: "w-36 h-36"
+    size: "w-32",
+    width: "135px"
   },
   {
     id: 3,
     name: "Library",
-    x: 22,
-    y: 78,
+    x: 26,
+    y: 72,
     icon: "/image/library.png",
     type: "Intellect",
     desc: "Ancient knowledge lies here.",
     unlocked: true,
-    size: "w-36 h-36"
+    size: "w-48",
+    width: "216px"
   },
   {
     id: 4,
     name: "Company",
-    x: 22,
+    x: 26,
     y: 22,
     icon: "/image/company.png",
     type: "Skill",
     desc: "Level up your career skills.",
     unlocked: true,
-    size: "w-36 h-36"
+    size: "w-36",
+    width: "150px"
   },
 ];
 
@@ -85,12 +89,13 @@ export function MapView() {
             style={{
               left: `${loc.x}%`,
               top: `${loc.y}%`,
+              width: loc.width || 'auto',
               transform: `translate(-50%, -50%) ${selectedLocation === loc.id ? 'scale(1.2)' : 'scale(1)'}`,
               zIndex: selectedLocation === loc.id ? 10 : 1,
             }}
           >
             <div
-              className="relative"
+              className="relative w-full h-full"
               style={{
                 filter: selectedLocation === loc.id ? 'drop-shadow(0 0 8px rgba(255,215,0,0.8))' : 'none',
               }}
@@ -98,9 +103,13 @@ export function MapView() {
               <img
                 src={loc.icon}
                 alt={loc.name}
-                className={`${loc.size} object-contain`}
-                style={{ imageRendering: 'pixelated' }}
+                className={`w-full h-auto object-cover`}
+                style={{
+                  imageRendering: 'pixelated'
+                }}
+                title={`${loc.name} - Size: ${loc.size} - Pos: (${loc.x}%, ${loc.y}%)`}
               />
+
             </div>
           </div>
         ))}
