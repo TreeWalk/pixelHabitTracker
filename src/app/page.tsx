@@ -13,6 +13,8 @@ import { SettingsView } from '@/components/settings/SettingsView';
 import { useQuests } from '@/context/QuestContext';
 import { useItems } from '@/context/ItemContext';
 
+import { LogProvider } from '@/context/LogContext';
+
 // App Content Component
 function AppContent() {
   const [activeTab, setActiveTab] = useState('quests');
@@ -27,7 +29,7 @@ function AppContent() {
       {/* Mobile Device Container */}
       <div className="mobile-container bg-dither shadow-2xl">
         {/* Body Content */}
-        <div className="flex-1 bg-dither p-4 overflow-y-auto pb-24 relative pt-8">
+        <div className={`flex-1 bg-dither relative ${activeTab === 'map' ? 'p-0 overflow-hidden' : 'p-4 overflow-y-auto pb-24 pt-8'}`}>
           {/* Quests View */}
           {activeTab === 'quests' && (
             <QuestsView onOpenModal={() => setIsQuestModalOpen(true)} />
@@ -71,7 +73,9 @@ export default function Home() {
   return (
     <QuestProvider>
       <ItemProvider>
-        <AppContent />
+        <LogProvider>
+          <AppContent />
+        </LogProvider>
       </ItemProvider>
     </QuestProvider>
   );

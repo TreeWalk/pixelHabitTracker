@@ -24,6 +24,7 @@ const locations: Location[] = [
     x: 70,
     y: 70,
     icon: "/image/gyn.png",
+    banner: "/buildings/gymLong.png",
     type: "Strength",
     desc: "Train your strength stats.",
     unlocked: true,
@@ -36,6 +37,7 @@ const locations: Location[] = [
     x: 26,
     y: 72,
     icon: "/image/library.png",
+    banner: "/buildings/libraryLongMorning.png",
     type: "Intellect",
     desc: "Ancient knowledge lies here.",
     unlocked: true,
@@ -48,6 +50,7 @@ const locations: Location[] = [
     x: 26,
     y: 22,
     icon: "/image/company.png",
+    banner: "/buildings/companyLongMorning.png",
     type: "Skill",
     desc: "Level up your career skills.",
     unlocked: true,
@@ -56,111 +59,114 @@ const locations: Location[] = [
   },
 ];
 
+import { useLogs } from '@/context/LogContext';
+
 export function MapView() {
   const [viewMode, setViewMode] = useState<'list' | 'detail'>('list');
   const [selectedId, setSelectedId] = useState(1);
-  const [records, setRecords] = useState<Record<number, { id: string, text: string, date: string }[]>>({});
+  const { addLog, getLogs } = useLogs();
   const [inputText, setInputText] = useState('');
 
   const selected = locations.find(l => l.id === selectedId);
 
   const handleAddRecord = () => {
     if (!inputText.trim()) return;
-    const newRecord = {
-      id: Math.random().toString(36).substr(2, 9),
-      text: inputText,
-      date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    };
-    setRecords(prev => ({
-      ...prev,
-      [selectedId]: [newRecord, ...(prev[selectedId] || [])]
-    }));
+    addLog(selectedId, inputText);
     setInputText('');
   };
 
+  const currentLogs = getLogs(selectedId);
+
   if (viewMode === 'detail' && selected) {
     return (
-      <div className="h-full w-full flex flex-col animate-in fade-in slide-in-from-right duration-300">
-        {/* Detail Header */}
-        <div className="flex items-center justify-between mb-4">
+      <div className="h-full w-full flex flex-col animate-in fade-in slide-in-from-right duration-300 bg-dither">
+        {/* Detail Header - Internal Padding */}
+        <div className="px-5 pt-8 mb-6 flex items-center justify-between">
           <button
             onClick={() => setViewMode('list')}
-            className="btn-primary py-1 px-4! text-sm! w-auto! btn-press flex items-center gap-2"
+            className="btn-primary py-1.5 px-4! text-sm! w-auto! btn-press flex items-center gap-2"
           >
-            <span>←</span> BACK
+            <span className="text-lg">←</span> BACK
           </button>
           <div className="text-right">
-            <h2 className="text-xl font-bold uppercase tracking-tighter text-shadow-retro line-clamp-1">
+            <h2 className="text-2xl font-bold uppercase tracking-tighter text-shadow-retro line-clamp-1">
               {selected.name}
             </h2>
-            <p className="text-[10px] text-yellow-600 font-bold tracking-widest leading-none">
-              {selected.type.toUpperCase()}
-            </p>
-          </div>
-        </div>
-
-        {/* Banner Section */}
-        <div
-          className="w-full h-48 retro-border-sm overflow-hidden mb-6"
-          style={{
-            backgroundImage: selected.banner ? `url(${selected.banner})` : 'none',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundColor: !selected.banner ? 'var(--pixel-bg-alt)' : 'transparent',
-            imageRendering: 'pixelated',
-          }}
-        >
-          {!selected.banner && (
-            <div className="w-full h-full flex items-center justify-center opacity-20">
-              <img src={selected.icon} className="w-24 h-24 pixelated" />
+            <div className="flex justify-end items-center gap-2">
+              <span className="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-pulse" />
+              <p className="text-xs text-yellow-600 font-bold tracking-widest uppercase">
+                {selected.type}
+              </p>
             </div>
-          )}
+          </div>
         </div>
 
-        {/* Journal Section */}
-        <div className="flex-1 flex flex-col min-h-0 bg-white/50 retro-border-sm p-4!">
-          <h3 className="text-lg font-bold mb-3 flex items-center gap-2">
-            <span className="w-2 h-4 bg-yellow-400" />
-            ADVENTURE LOG
-          </h3>
-
-          {/* Record Input */}
-          <div className="mb-4 space-y-2">
-            <textarea
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              placeholder="What happened here today?"
-              className="w-full h-20 p-3 text-sm bg-white retro-border-sm focus:outline-none focus:ring-2 ring-yellow-400 placeholder:opacity-50 resize-none font-pixel"
-            />
-            <button
-              onClick={handleAddRecord}
-              className="btn-primary py-2! text-sm! btn-press bg-yellow-400!"
-            >
-              LOG ENTRY
-            </button>
-          </div>
-
-          {/* Record List */}
-          <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-3">
-            {(records[selectedId] || []).length > 0 ? (
-              records[selectedId].map(rec => (
-                <div key={rec.id} className="bg-white p-3 retro-border-sm">
-                  <div className="flex justify-between items-start mb-1">
-                    <span className="text-[10px] bg-blue-100 px-2 py-0.5 font-bold text-blue-600">
-                      {rec.date}
-                    </span>
-                  </div>
-                  <p className="text-sm font-bold leading-snug break-words">
-                    {rec.text}
-                  </p>
-                </div>
-              ))
-            ) : (
-              <div className="h-full flex flex-col items-center justify-center opacity-30 grayscale italic text-sm">
-                <p>No records yet...</p>
-                <p>Start your legend.</p>
+        {/* Banner Section - With side margins */}
+        <div className="px-5 mb-6">
+          <div
+            className="w-full h-44 retro-border-sm overflow-hidden"
+            style={{
+              backgroundImage: selected.banner ? `url(${selected.banner})` : 'none',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundColor: !selected.banner ? 'var(--pixel-bg-alt)' : 'transparent',
+              imageRendering: 'pixelated',
+            }}
+          >
+            {!selected.banner && (
+              <div className="w-full h-full flex items-center justify-center opacity-20">
+                <img src={selected.icon} className="w-24 h-24 pixelated" />
               </div>
             )}
+          </div>
+        </div>
+
+        {/* Journal Section - With side margins */}
+        <div className="flex-1 flex flex-col min-h-0 px-5 pb-24">
+          <div className="flex-1 flex flex-col bg-white/60 backdrop-blur-sm retro-border-sm p-5!">
+            <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-shadow-retro">
+              <span className="w-2 h-4 bg-blue-500" />
+              ADVENTURE LOG
+            </h3>
+
+            {/* Record Input */}
+            <div className="mb-6 space-y-3">
+              <textarea
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
+                placeholder="What happened here today?"
+                className="w-full h-24 p-4 text-sm bg-white/90 retro-border-sm focus:outline-none ring-2 ring-transparent focus:ring-yellow-400 transition-all placeholder:opacity-50 resize-none font-pixel"
+              />
+              <button
+                onClick={handleAddRecord}
+                className="btn-primary py-2.5! text-base! btn-press bg-yellow-400! hover:brightness-105 active:brightness-95 transition-all"
+              >
+                LOG ENTRY
+              </button>
+            </div>
+
+            {/* Record List */}
+            <div className="flex-1 overflow-y-auto no-scrollbar space-y-4">
+              {currentLogs.length > 0 ? (
+                currentLogs.map(rec => (
+                  <div key={rec.id} className="bg-white p-4 retro-border-sm border-l-4 border-l-blue-400">
+                    <div className="flex justify-between items-start mb-2">
+                      <span className="text-[10px] bg-blue-50 px-2 py-0.5 font-bold text-blue-600 tracking-tighter">
+                        LOGGED AT {rec.date}
+                      </span>
+                    </div>
+                    <p className="text-base font-bold leading-tight break-words text-slate-700">
+                      {rec.text}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <div className="h-full flex flex-col items-center justify-center opacity-30 grayscale italic text-sm text-center">
+                  <p className="mb-1">No entries recorded...</p>
+                  <p>Every step is a story.</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -169,14 +175,14 @@ export function MapView() {
 
   return (
     <div className="h-full w-full flex flex-col animate-in fade-in duration-300">
-      {/* Map Header */}
-      <div className="section-header">
+      {/* Map Header - Internal Padding added here because parent is p-0 */}
+      <div className="section-header px-4 pt-8 mb-6">
         <h2 className="section-title text-shadow-retro uppercase">World Map</h2>
         <p className="section-subtitle">Select a destination to explore</p>
       </div>
 
-      {/* Building List Area */}
-      <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-4 pb-4">
+      {/* Building List Area - Full Width, Scrollable inside h-full */}
+      <div className="flex-1 overflow-y-auto no-scrollbar space-y-4 px-4 pb-24">
         {locations.map(loc => (
           <div
             key={loc.id}
@@ -209,14 +215,12 @@ export function MapView() {
             {/* Overlay Content */}
             <div className="absolute inset-0 flex items-center px-8 bg-gradient-to-r from-black/80 via-black/40 to-transparent">
               <div className="flex items-center space-x-6">
-                <div className="p-2 bg-black/40 retro-border-sm backdrop-blur-sm">
-                  <img
-                    src={loc.icon}
-                    alt={loc.name}
-                    className="w-14 h-14 object-contain"
-                    style={{ imageRendering: 'pixelated' }}
-                  />
-                </div>
+                <img
+                  src={loc.icon}
+                  alt={loc.name}
+                  className="w-16 h-16 object-contain"
+                  style={{ imageRendering: 'pixelated' }}
+                />
                 <div className="text-shadow-retro">
                   <h3 className="text-white font-bold text-2xl uppercase tracking-tighter">
                     {loc.name}

@@ -82,15 +82,33 @@ body {
 }
 
 /* ===== CUSTOM SCROLLBAR ===== */
-::-webkit-scrollbar {
+.custom-scrollbar::-webkit-scrollbar {
   width: 10px;
   background-color: var(--pixel-bg);
   border-left: 4px solid var(--pixel-border);
 }
 
-::-webkit-scrollbar-thumb {
+.custom-scrollbar::-webkit-scrollbar-thumb {
   background-color: var(--pixel-accent);
   border: 2px solid var(--pixel-border);
+}
+
+/* ===== HIDE SCROLLBAR UTILITY ===== */
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none !important;
+  /* IE and Edge */
+  scrollbar-width: none !important;
+  /* Firefox */
+}
+
+/* ===== FULL VIEW CONTAINER ===== */
+.map-container-fix {
+  padding: 0 !important;
+  overflow: hidden !important;
 }
 
 /* ===== CHECKBOX STYLES ===== */
